@@ -2,62 +2,100 @@ package com.gouthamreddy.constitutionofindia.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import com.gouthamreddy.constitutionofindia.domain.usecase.PDFDownloaderUseCase
-import com.gouthamreddy.constitutionofindia.utils.PdfDownloadWorker
-import com.gouthamreddy.constitutionofindia.utils.PdfParseWorker
+import androidx.lifecycle.viewModelScope
+import com.gouthamreddy.constitutionofindia.data.models.AmendmentEntity
+import com.gouthamreddy.constitutionofindia.data.models.ArticleEntity
+import com.gouthamreddy.constitutionofindia.data.models.ConstitutionCombinedResponseItem
+import com.gouthamreddy.constitutionofindia.data.models.ScheduleEntity
+import com.gouthamreddy.constitutionofindia.domain.ConstitutionRepository
+import com.gouthamreddy.constitutionofindia.domain.usecase.FetchCombinedJSONDataUseCase
+import com.gouthamreddy.constitutionofindia.mappers.ArticleJsonToEntityMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    val pdfDownloaderUseCase: PDFDownloaderUseCase,
-    val workManager: WorkManager,
+    val fetchCombinedJSONDataUseCase: FetchCombinedJSONDataUseCase,
+    val dbRepository: ConstitutionRepository,
 ) : ViewModel() {
 
+    private val _state = MutableStateFlow<MainActivityState>(MainActivityState())
+    val state = _state.asStateFlow()
 
+    init {
+        syncLocalStateWithDB()
+    }
 
+    fun fetchCombinedJSONData() {
+        viewModelScope.launch {
+            val articles = dbRepository.getAllArticles().firstOrNull()
+            if (articles.isNullOrEmpty()) {
+                fetchCombinedJSONDataUseCase(Unit).onSuccess { response ->
+                    Log.d("MainActivityViewModel", "Success: $response")
+                    updateDatabase(response)
+                }.onFailure {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = it.errorMessage
+                        )
+                    }
+                    Log.e("MainActivityViewModel", "Error: ${it.message}")
+                }
+            } else {
+                Log.d("MainActivityViewModel", "DB has articles don't fetch")
+            }
+        }
+    }
 
-    fun schedulePdfParsing() {
-        // Define constraints (e.g., require network)
-        val constraints = Constraints.Builder()
-            .setRequiresStorageNotLow(true)
-            .build()
+    private fun updateDatabase(list: List<ConstitutionCombinedResponseItem>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dbRepository.insertArticles(list.map { ArticleJsonToEntityMapper().map(it) })
 
-        // Create the download work request
-        val downloadRequest = OneTimeWorkRequestBuilder<PdfDownloadWorker>()
-            .setConstraints(constraints)
-            .build()
+        }
+    }
 
-        // Create the parsing work request
-        val parseRequest = OneTimeWorkRequestBuilder<PdfParseWorker>()
-            .setConstraints(constraints)
-            .build()
+    private fun syncLocalStateWithDB() {
+        viewModelScope.launch {
+            dbRepository.getAllArticles().collectLatest { articles ->
+                _state.update {
+                    it.copy(
+                        articlesList = articles,
+                    )
+                }
+            }
+            dbRepository.getAllSchedules().collectLatest { schedules ->
+                _state.update {
+                    it.copy(
+                        schedulesList = schedules,
+                    )
+                }
+            }
+            dbRepository.getAllAmendments().collectLatest { amendments ->
+                _state.update {
+                    it.copy(
+                        amendmentsList = amendments,
+                    )
+                }
+            }
 
-        // Create the work chain
-        val workChain = workManager.beginWith(downloadRequest)
-            .then(parseRequest)
-
-        // Enqueue the work chain
-        workChain.enqueue()
-
-        val request = PeriodicWorkRequestBuilder<PdfDownloadWorker>(
-            repeatInterval = 1, // Run every 1 day
-            repeatIntervalTimeUnit = TimeUnit.DAYS
-        ).build()
-
-        Log.d("MainActivityViewModel", "Scheduling PDF parsing")
-
-        workManager.enqueueUniquePeriodicWork(
-            "pdf_parsing_work", // Unique name for the work
-            ExistingPeriodicWorkPolicy.REPLACE, // If it's already scheduled, keep the old one
-            request
-        )
+        }
     }
 
 }
+
+data class MainActivityState(
+    val articlesList: List<ArticleEntity> = emptyList<ArticleEntity>(),
+    val schedulesList: List<ScheduleEntity> = emptyList<ScheduleEntity>(),
+    val amendmentsList: List<AmendmentEntity> = emptyList<AmendmentEntity>(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
+
+)

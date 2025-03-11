@@ -1,24 +1,8 @@
 package com.gouthamreddy.constitutionofindia.utils
 
-import android.content.Context
-import android.os.Environment
-import android.util.Log
-import androidx.hilt.work.HiltWorker
-import androidx.work.CoroutineWorker
-import androidx.work.WorkerParameters
-import com.gouthamreddy.constitutionofindia.data.models.ConstitutionDatabase
-import com.gouthamreddy.constitutionofindia.domain.execute
-import com.gouthamreddy.constitutionofindia.domain.usecase.PDFDownloaderUseCase
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import okhttp3.ResponseBody
-import java.io.File
-import java.io.FileOutputStream
-import javax.inject.Inject
+/*
 
+Not Needed for current approach
 @HiltWorker
 class PdfParseWorker @AssistedInject constructor(
      @Assisted private val applicationContext: Context,
@@ -90,4 +74,4 @@ class PdfParseWorker @AssistedInject constructor(
             false
         }
     }
-}
+}*/

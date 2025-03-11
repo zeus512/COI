@@ -2,12 +2,7 @@ package com.gouthamreddy.constitutionofindia.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.work.Configuration
-import androidx.work.WorkManager
-import com.gouthamreddy.constitutionofindia.data.models.ConstitutionDatabase
-import com.gouthamreddy.constitutionofindia.utils.AppWorkerFactory
-import com.gouthamreddy.constitutionofindia.utils.ConstitutionParser
-import com.gouthamreddy.constitutionofindia.utils.PdfParser
+import com.gouthamreddy.constitutionofindia.data.dao.ConstitutionDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +22,8 @@ object AppModule {
             "constitution_database"
         ).build()
     }
+/*
+      Not Needed for current approach
     @Provides
     @Singleton
     fun providePdfParser(@ApplicationContext context: Context): PdfParser {
@@ -37,6 +34,7 @@ object AppModule {
     fun provideConstitutionParser(@ApplicationContext context: Context): ConstitutionParser {
         return ConstitutionParser(context)
     }
+
 
     @Provides
     @Singleton
@@ -50,4 +48,5 @@ object AppModule {
         WorkManager.initialize(context, config)
         return WorkManager.getInstance(context)
     }
+ */
 }

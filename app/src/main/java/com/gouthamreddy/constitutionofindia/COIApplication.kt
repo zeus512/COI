@@ -8,7 +8,7 @@ import dagger.hilt.android.HiltAndroidApp
 class COIApplication: Application(){
     override fun onCreate() {
         super.onCreate()
-        PDFBoxResourceLoader.init(applicationContext);
+        // PDFBoxResourceLoader.init(applicationContext);
     }
 
 

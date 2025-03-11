@@ -7,6 +7,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
+/*
+Not required for current approach
 class PdfParser() {
 
     suspend fun parsePdfFromLocal(filePath: String): String = withContext(Dispatchers.IO) {
@@ -26,4 +28,4 @@ class PdfParser() {
             ""
         }
     }
-}
+}*/

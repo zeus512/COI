@@ -16,7 +16,8 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.resume
-
+/*
+NOT NEEDED FOR CURRENT IMPLEMENTATION
 class ConstitutionParser @Inject constructor(@ApplicationContext val context: Context) {
 
     fun parseArticles(pdfText: String): List<ArticleEntity> {
@@ -128,4 +129,4 @@ class ConstitutionParser @Inject constructor(@ApplicationContext val context: Co
                 }
             }
         }
-}
+}*/

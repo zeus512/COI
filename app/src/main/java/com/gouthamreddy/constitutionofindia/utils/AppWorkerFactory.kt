@@ -1,13 +1,7 @@
 package com.gouthamreddy.constitutionofindia.utils
 
-import android.content.Context
-import androidx.work.ListenableWorker
-import androidx.work.WorkerFactory
-import androidx.work.WorkerParameters
-import com.gouthamreddy.constitutionofindia.data.models.ConstitutionDatabase
-import com.gouthamreddy.constitutionofindia.domain.usecase.PDFDownloaderUseCase
-import javax.inject.Inject
-
+/*
+Not Needed for current approach
 class AppWorkerFactory @Inject constructor(
     private val pdfParser: PdfParser,
     private val database: ConstitutionDatabase,
@@ -41,3 +35,4 @@ class AppWorkerFactory @Inject constructor(
         }
     }
 }
+*/

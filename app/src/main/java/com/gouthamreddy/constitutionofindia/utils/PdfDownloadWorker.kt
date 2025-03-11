@@ -18,7 +18,8 @@ import okhttp3.ResponseBody
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
-
+/*
+Not Needed for current approach
 @HiltWorker
 class PdfDownloadWorker @AssistedInject constructor(
     @Assisted  private val applicationContext: Context,
@@ -68,3 +69,4 @@ class PdfDownloadWorker @AssistedInject constructor(
         }
     }
 }
+*/

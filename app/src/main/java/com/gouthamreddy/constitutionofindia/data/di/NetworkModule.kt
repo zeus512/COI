@@ -10,6 +10,7 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import com.gouthamreddy.constitutionofindia.data.ApiService
+import com.gouthamreddy.constitutionofindia.utils.Constants
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -71,7 +72,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(kotlinSerializationConverter: Converter.Factory, okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://gouthamreddy.com")
+            .baseUrl(Constants.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(kotlinSerializationConverter)
             .build()
