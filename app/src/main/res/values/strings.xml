@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Constitution of India</string>
+    <string name="constitution_of_india">Constitution of India</string>
+    <string name="parts">Parts</string>
+    <string name="amendments">Amendments</string>
+    <string name="preamble">Preamble</string>
+    <string name="schedules">Schedules</string>
 </resources>

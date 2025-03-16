@@ -116,4 +116,5 @@ dependencies {
     // optional - Test helpers
     testImplementation(libs.androidx.work.testing)
 
+    implementation(libs.androidx.navigation.compose)
 }
