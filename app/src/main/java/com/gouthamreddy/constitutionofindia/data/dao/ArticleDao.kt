@@ -1,15 +1,11 @@
 package com.gouthamreddy.constitutionofindia.data.dao
 
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.gouthamreddy.constitutionofindia.data.models.ArticleEntity
-import com.gouthamreddy.constitutionofindia.data.models.ConstitutionCombinedResponseItem
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 
 @Dao
 interface ArticleDao {
@@ -22,7 +18,7 @@ interface ArticleDao {
     @Delete
     suspend fun deleteArticle(article: ArticleEntity)
 
-    @Query("SELECT * FROM articles")
+    @Query("SELECT * FROM articles ORDER BY CAST(article_number AS INTEGER) ASC")
     fun getAllArticles(): Flow<List<ArticleEntity>>
 
     @Query("DELETE FROM articles")

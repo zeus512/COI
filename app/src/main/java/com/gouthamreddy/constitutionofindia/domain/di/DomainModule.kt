@@ -3,6 +3,8 @@ package com.gouthamreddy.constitutionofindia.domain.di
 import com.gouthamreddy.constitutionofindia.data.ApiService
 import com.gouthamreddy.constitutionofindia.domain.AppRepository
 import com.gouthamreddy.constitutionofindia.domain.usecase.FetchCombinedJSONDataUseCase
+import com.gouthamreddy.constitutionofindia.domain.usecase.FetchPreambleJSONDataUseCase
+import com.gouthamreddy.constitutionofindia.domain.usecase.FetchSchedulesJSONDataUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,6 +40,16 @@ object DomainModule {
     @Singleton
     fun provideFetchCombinedJSONDataUseCase(appRepository: AppRepository): FetchCombinedJSONDataUseCase {
         return FetchCombinedJSONDataUseCase(appRepository)
+    }
+    @Provides
+    @Singleton
+    fun provideFetchSchedulesJSONDataUseCase(appRepository: AppRepository): FetchSchedulesJSONDataUseCase {
+        return FetchSchedulesJSONDataUseCase(appRepository)
+    }
+    @Provides
+    @Singleton
+    fun provideFetchPreambleDataUseCase(appRepository: AppRepository): FetchPreambleJSONDataUseCase {
+        return FetchPreambleJSONDataUseCase(appRepository)
     }
 
 

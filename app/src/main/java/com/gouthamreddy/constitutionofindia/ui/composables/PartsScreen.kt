@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -15,13 +14,8 @@ import com.gouthamreddy.constitutionofindia.ui.ScreenState
 import com.gouthamreddy.constitutionofindia.viewmodels.MainActivityViewModel
 
 @Composable
-fun PartsScreen(navigateTo: (ScreenState) -> Unit) {
-    val viewModel: MainActivityViewModel = hiltViewModel()
+fun PartsScreen(viewModel: MainActivityViewModel = hiltViewModel<MainActivityViewModel>(), navigateTo: (ScreenState) -> Unit) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
-    LaunchedEffect(Unit) {
-        if (state.articlesList.isEmpty())
-            viewModel.fetchCombinedJSONData()
-    }
     val parts = state.articlesList.map { it.part }.distinct()
     LazyColumn(
         modifier = Modifier

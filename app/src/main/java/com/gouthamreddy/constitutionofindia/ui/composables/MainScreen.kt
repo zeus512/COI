@@ -25,11 +25,13 @@ import com.gouthamreddy.constitutionofindia.ui.ScreenState
 import com.gouthamreddy.constitutionofindia.viewmodels.MainActivityViewModel
 
 @Composable
-fun MainScreen(navigateTo: (ScreenState) -> Unit) {
-    val viewModel: MainActivityViewModel = hiltViewModel()
+fun MainScreen(
+    viewModel: MainActivityViewModel = hiltViewModel<MainActivityViewModel>(),
+    navigateTo: (ScreenState) -> Unit
+) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
     LaunchedEffect(Unit) {
-        viewModel.fetchCombinedJSONData()
+        viewModel.fetchDataFromRemote()
     }
     if (state.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -40,7 +42,7 @@ fun MainScreen(navigateTo: (ScreenState) -> Unit) {
             ScreenState.Parts,
             ScreenState.Preamble,
             ScreenState.Schedules,
-            ScreenState.Ammendments
+            ScreenState.Amendments
         )
         Column(
             modifier = Modifier
@@ -60,7 +62,7 @@ fun MainScreen(navigateTo: (ScreenState) -> Unit) {
             sections.forEach { section ->
                 InteractiveCard(
                     title = section.toString(),
-                    onClick = { navigateTo(ScreenState.Parts) })
+                    onClick = { navigateTo(section) })
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }

@@ -1,5 +1,7 @@
 package com.gouthamreddy.constitutionofindia.ui
 
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -18,12 +20,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.gouthamreddy.constitutionofindia.data.models.SearchResult
 import com.gouthamreddy.constitutionofindia.ui.composables.ArticleDetailScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.ArticlesScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.MainScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.PartsScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.PreambleScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.SchedulesScreen
+import com.gouthamreddy.constitutionofindia.ui.composables.SearchResultsScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.TopBar
 import kotlinx.serialization.Serializable
 
@@ -31,13 +35,30 @@ import kotlinx.serialization.Serializable
 fun AppNavigation() {
     val navController = rememberNavController()
     var currentScreenTitle by remember { mutableStateOf("Constitution of India") }
+    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    BackHandler {
+        if (navController.previousBackStackEntry != null) {
+            navController.popBackStack()
+        } else {
+            onBackPressedDispatcher?.onBackPressed()
+        }
+    }
     Scaffold(
         topBar = {
             TopBar(
-                title = { currentScreenTitle }
-            ) {
-                navController.popBackStack()
-            }
+                title = { currentScreenTitle },
+                navigateToSearchScreen = {
+                    navController.navigate(ScreenState.Search)
+                },
+                showSearch = true,
+                onBack = {
+                    if (navController.previousBackStackEntry != null) {
+                        navController.popBackStack()
+                    } else {
+                        onBackPressedDispatcher?.onBackPressed()
+                    }
+                }
+            )
         }
     ) {
         val gradientColors = listOf(Color(0xFFFF9933), Color.White, Color(0xFF138808))
@@ -87,7 +108,7 @@ fun AppNavigation() {
             ) { backStackEntry ->
                 val part = backStackEntry.toRoute<ScreenState.Articles>().part
                 currentScreenTitle = part
-                ArticlesScreen( navigateTo = { navController.navigate(it) })
+                ArticlesScreen(part = part, navigateTo = { navController.navigate(it) })
             }
             composable<ScreenState.ArticleDetail>(
                 enterTransition = { slideInHorizontally(animationSpec = tween(500)) { if (targetState.id > initialState.id) -it else it } },
@@ -97,6 +118,22 @@ fun AppNavigation() {
                     backStackEntry.toRoute<ScreenState.ArticleDetail>().articleNumber
                 currentScreenTitle = "Article $articleNumber"
                 ArticleDetailScreen(articleNumber, navigateTo = { navController.navigate(it) })
+            }
+
+            composable<ScreenState.Search> {
+                currentScreenTitle = "Search"
+                SearchResultsScreen(navigateToDetail = { result ->
+                    when (result) {
+                        is SearchResult.ArticleResult -> navController.navigate(
+                            ScreenState.ArticleDetail(
+                                result.article.articleNumber
+                            )
+                        )
+
+                        is SearchResult.ScheduleResult -> navController.navigate(ScreenState.Schedules)
+                        is SearchResult.AmendmentResult -> navController.navigate(ScreenState.Amendments)
+                    }
+                })
             }
 
         }
@@ -117,7 +154,7 @@ sealed interface ScreenState {
     data object Preamble : ScreenState
 
     @Serializable
-    data object Ammendments : ScreenState
+    data object Amendments : ScreenState
 
 
     @Serializable
@@ -125,6 +162,10 @@ sealed interface ScreenState {
 
     @Serializable
     data class ArticleDetail(val articleNumber: String) : ScreenState
+
+
+    @Serializable
+    data object Search : ScreenState
 
 
 }

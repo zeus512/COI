@@ -8,14 +8,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.gouthamreddy.constitutionofindia.viewmodels.MainActivityViewModel
 
 @Composable
-fun PreambleScreen() {
+fun PreambleScreen(viewModel: MainActivityViewModel = hiltViewModel<MainActivityViewModel>()) {
+    val state = viewModel.state.collectAsState().value
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -24,7 +28,13 @@ fun PreambleScreen() {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "WE, THE PEOPLE OF INDIA, having solemnly resolved to constitute India into a SOVEREIGN, SOCIALIST, SECULAR, DEMOCRATIC, REPUBLIC and to secure to all its citizens: Justice, social, economic and political; Liberty of thought, expression, belief, faith and worship; Equality of status and of opportunity; and to promote among them all fraternity assuring the dignity of the individual and the unity and integrity of the Nation.",
+            text = state.preamble.title,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF000080)
+        )
+        Text(
+            text = state.preamble.content,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF000080)
