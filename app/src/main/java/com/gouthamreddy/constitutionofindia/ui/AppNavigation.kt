@@ -1,6 +1,7 @@
 package com.gouthamreddy.constitutionofindia.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
@@ -36,11 +37,12 @@ fun AppNavigation() {
     val navController = rememberNavController()
     var currentScreenTitle by remember { mutableStateOf("Constitution of India") }
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val context = LocalActivity.current
     BackHandler {
         if (navController.previousBackStackEntry != null) {
             navController.popBackStack()
         } else {
-            onBackPressedDispatcher?.onBackPressed()
+           context?.finish()
         }
     }
     Scaffold(
