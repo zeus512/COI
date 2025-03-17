@@ -124,14 +124,14 @@ fun SearchResultCard(title: String, description: String, onClick: () -> Unit) {
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(title, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text(title, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.Black)
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 description,
                 fontSize = 14.sp,
                 color = Color.Gray,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }

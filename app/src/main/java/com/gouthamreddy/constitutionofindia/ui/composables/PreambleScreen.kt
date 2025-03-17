@@ -39,9 +39,5 @@ fun PreambleScreen(viewModel: MainActivityViewModel = hiltViewModel<MainActivity
             fontWeight = FontWeight.Bold,
             color = Color(0xFF000080)
         )
-        Text(
-            text = "A declaration of India's fundamental principles...",
-            fontSize = 18.sp
-        )
     }
 }
