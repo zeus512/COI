@@ -10,13 +10,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -24,12 +25,15 @@ import androidx.navigation.toRoute
 import com.gouthamreddy.constitutionofindia.data.models.SearchResult
 import com.gouthamreddy.constitutionofindia.ui.composables.ArticleDetailScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.ArticlesScreen
+import com.gouthamreddy.constitutionofindia.ui.composables.LoadingScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.MainScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.PartsScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.PreambleScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.SchedulesScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.SearchResultsScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.TopBar
+import com.gouthamreddy.constitutionofindia.ui.theme.GradientColors
+import com.gouthamreddy.constitutionofindia.viewmodels.MainActivityViewModel
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -42,9 +46,11 @@ fun AppNavigation() {
         if (navController.previousBackStackEntry != null) {
             navController.popBackStack()
         } else {
-           context?.finish()
+            context?.finish()
         }
     }
+    val viewModel = hiltViewModel<MainActivityViewModel>()
+    val state = viewModel.state.collectAsState().value
     Scaffold(
         topBar = {
             TopBar(
@@ -63,12 +69,11 @@ fun AppNavigation() {
             )
         }
     ) {
-        val gradientColors = listOf(Color(0xFFFF9933), Color.White, Color(0xFF138808))
-
+        LoadingScreen(true || state.isLoading)
         NavHost(
             modifier = Modifier
                 .padding(it)
-                .background(Brush.verticalGradient(gradientColors)),
+                .background(Brush.verticalGradient(GradientColors)),
             navController = navController,
             startDestination = ScreenState.Main
         ) {

@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -49,7 +50,7 @@ fun ArticleDetailScreen(
 
     var showVersion1 by remember { mutableStateOf(false) }
     var showVersion2 by remember { mutableStateOf(false) }
-
+    LoadingScreen(state.isLoading)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -120,7 +121,7 @@ fun SectionTitle(title: String) {
         text = title,
         fontSize = 18.sp,
         fontWeight = FontWeight.SemiBold,
-        color = Color(0xFF000080),
+        color = MaterialTheme.colorScheme.secondary,
         modifier = Modifier.padding(bottom = 4.dp)
     )
 }
@@ -136,7 +137,7 @@ fun InfoRow(label: String, value: String) {
             text = "$label:",
             fontSize = 18.sp,
             fontWeight = FontWeight.Medium,
-            color = Color(0xFF000080)
+            color = MaterialTheme.colorScheme.secondary
         )
         Text(
             text = value,

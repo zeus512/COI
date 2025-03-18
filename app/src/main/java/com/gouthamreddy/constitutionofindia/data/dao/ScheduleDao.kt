@@ -1,8 +1,8 @@
 package com.gouthamreddy.constitutionofindia.data.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Delete
+import androidx.room.Insert
 import androidx.room.Query
 import com.gouthamreddy.constitutionofindia.data.models.ScheduleEntity
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +20,7 @@ interface ScheduleDao {
 
     @Query("SELECT * FROM schedules")
     fun getAllSchedules(): Flow<List<ScheduleEntity>>
-    
-     @Query("DELETE FROM schedules")
+
+    @Query("DELETE FROM schedules")
     suspend fun deleteAllSchedules()
 }

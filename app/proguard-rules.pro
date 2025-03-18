@@ -19,3 +19,26 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+# Preserve Kotlin Serialization annotations
+-keep class kotlinx.serialization.** { *; }
+
+# Keep generic type information for serialization
+-keepattributes Signature
+
+# Keep metadata for Kotlin Reflect & Serialization
+-keep class kotlin.Metadata { *; }
+
+# Prevent R8 from stripping runtime-used types
+-keep class your.package.model.** { *; }  # Change this to your data model package
+
+# Keep generic type arguments (avoid ParameterizedType issues)
+-keepattributes InnerClasses, EnclosingMethod
+
+# Keep generic signature of Call, Response (R8 full mode strips signatures from non-kept items).
+ -keep,allowobfuscation,allowshrinking interface retrofit2.Call
+ -keep,allowobfuscation,allowshrinking class retrofit2.Response
+
+ # With R8 full mode generic signatures are stripped for classes that are not
+ # kept. Suspend functions are wrapped in continuations where the type argument
+ # is used.
+ -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation

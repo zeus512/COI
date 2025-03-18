@@ -23,21 +23,12 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
-import java.security.KeyManagementException
-import java.security.NoSuchAlgorithmException
-import java.security.cert.CertificateException
-import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLSocketFactory
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
 
 
     @Provides
@@ -108,40 +99,6 @@ object NetworkModule {
         return retrofit.create(ApiService::class.java)
     }
 
-
-    @Provides
-    @Singleton
-    fun provideTrustManager(): X509TrustManager {
-        return object : X509TrustManager {
-            @Throws(CertificateException::class)
-            override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
-                // Accept all client certificates (use with caution!)
-            }
-
-            @Throws(CertificateException::class)
-            override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
-                // Accept all server certificates (use with caution!)
-            }
-
-            override fun getAcceptedIssuers(): Array<X509Certificate> {
-                return arrayOf()
-            }
-        }
-    }
-
-    @Provides
-    @Singleton
-    fun provideSSLSocketFactory(trustManager: X509TrustManager): SSLSocketFactory {
-        return try {
-            val sslContext = SSLContext.getInstance("TLS")
-            sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
-            sslContext.socketFactory
-        } catch (e: NoSuchAlgorithmException) {
-            throw RuntimeException("Failed to create SSLSocketFactory", e)
-        } catch (e: KeyManagementException) {
-            throw RuntimeException("Failed to create SSLSocketFactory", e)
-        }
-    }
 
     @OptIn(ExperimentalCoilApi::class)
     @Provides

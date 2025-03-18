@@ -19,6 +19,7 @@ import com.gouthamreddy.constitutionofindia.mappers.ArticleJsonToEntityMapper
 import com.gouthamreddy.constitutionofindia.mappers.ScheduleJsonToEntityMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -39,7 +40,7 @@ class MainActivityViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     init {
-        syncLocalStateWithDB()
+        startPolling()
     }
 
     fun fetchDataFromRemote() {
@@ -47,8 +48,7 @@ class MainActivityViewModel @Inject constructor(
             val articles = dbRepository.getAllArticles().firstOrNull()
             if (articles.isNullOrEmpty()) {
                 fetchCombinedJSONDataUseCase(Unit).onSuccess { response ->
-                    Log.d("MainActivityViewModel", "Success: $response")
-                    updateArticlesInDatabase(response)
+                   updateArticlesInDatabase(response)
                 }.onFailure {
                     _state.update {
                         it.copy(
@@ -58,13 +58,10 @@ class MainActivityViewModel @Inject constructor(
                     }
                     Log.e("MainActivityViewModel", "Error: ${it.message}")
                 }
-            } else {
-                Log.d("MainActivityViewModel", "DB has articles don't fetch")
             }
             val schedules = dbRepository.getAllSchedules().firstOrNull()
             if (schedules.isNullOrEmpty()) {
                 fetchSchedulesJSONDataUseCase(Unit).onSuccess { response ->
-                    Log.d("MainActivityViewModel", "Success: $response")
                     updateSchedulesInDatabase(response)
                 }.onFailure {
                     _state.update {
@@ -75,13 +72,10 @@ class MainActivityViewModel @Inject constructor(
                     }
                     Log.e("MainActivityViewModel", "Error: ${it.message}")
                 }
-            } else {
-                Log.d("MainActivityViewModel", "DB has articles don't fetch")
             }
             val preamble = dbRepository.getPreamble().firstOrNull()
             if (preamble.isNullOrEmpty()) {
                 fetchPreambleJSONDataUseCase(Unit).onSuccess { response ->
-                    Log.d("MainActivityViewModel", "Success: $response")
                     updatePreambleInDatabase(response)
                 }.onFailure {
                     _state.update {
@@ -92,8 +86,6 @@ class MainActivityViewModel @Inject constructor(
                     }
                     Log.e("MainActivityViewModel", "Error: ${it.message}")
                 }
-            } else {
-                Log.d("MainActivityViewModel", "DB has articles don't fetch")
             }
         }
     }
@@ -121,6 +113,25 @@ class MainActivityViewModel @Inject constructor(
             )
 
         }
+    }
+
+    private fun startPolling() {
+        viewModelScope.launch {
+            var i =0
+            while (true) {
+                syncLocalStateWithDB()
+                delay(60_000) // Wait for 60 seconds
+                i++
+                if (isDataAvailable() || i > 10) break
+            }
+        }
+    }
+
+    private fun isDataAvailable(): Boolean {
+        return state.value.preamble.content.isNotEmpty() &&
+                state.value.schedulesList.isNotEmpty() &&
+                state.value.articlesList.isNotEmpty()
+                //&& state.value.amendmentsList.isNotEmpty()
     }
 
     private fun syncLocalStateWithDB() {
@@ -182,7 +193,7 @@ data class MainActivityState(
     val amendmentsList: List<AmendmentEntity> = emptyList<AmendmentEntity>(),
     val searchResults: List<SearchResult> = emptyList<SearchResult>(),
     val preamble: PreambleEntity = PreambleEntity(title = "Loading", content = ""),
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val errorMessage: String? = null
 
 )
