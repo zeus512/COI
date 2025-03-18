@@ -22,7 +22,6 @@ fun ArticlesScreen(
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
     val articles = state.articlesList.filter { part == it.part }
-    LoadingScreen(state.isLoading)
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()

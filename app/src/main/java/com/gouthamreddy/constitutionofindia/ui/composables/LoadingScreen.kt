@@ -14,8 +14,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoadingScreen(isLoading: Boolean) {
-    if (isLoading) {
+fun LoadingScreen(isLoading: () -> Boolean = { false }) {
+    if (isLoading()) {
         Box(
             modifier = Modifier
                 .fillMaxSize(),

@@ -50,7 +50,6 @@ fun ArticleDetailScreen(
 
     var showVersion1 by remember { mutableStateOf(false) }
     var showVersion2 by remember { mutableStateOf(false) }
-    LoadingScreen(state.isLoading)
     Column(
         modifier = Modifier
             .fillMaxSize()

@@ -140,8 +140,8 @@ class MainActivityViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         preamble = preamble.firstOrNull() ?: PreambleEntity(
-                            title = "Loading",
-                            content = ""
+                            title = "",
+                            content = "",
                         ),
                     )
                 }
@@ -152,6 +152,7 @@ class MainActivityViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         schedulesList = schedules,
+                        isLoading = false
                     )
                 }
             }
@@ -161,16 +162,17 @@ class MainActivityViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         articlesList = articles,
+                        isLoading = false
                     )
                 }
             }
         }
         viewModelScope.launch {
-
             dbRepository.getAllAmendments().collectLatest { amendments ->
                 _state.update {
                     it.copy(
                         amendmentsList = amendments,
+                        isLoading = false
                     )
                 }
             }
