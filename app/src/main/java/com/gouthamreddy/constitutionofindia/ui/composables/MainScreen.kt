@@ -1,6 +1,7 @@
 package com.gouthamreddy.constitutionofindia.ui.composables
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -58,6 +59,12 @@ fun MainScreen(
                 onClick = { navigateTo(section) })
             Spacer(modifier = Modifier.height(16.dp))
         }
+    }
+    Box(
+        contentAlignment = Alignment.BottomCenter, modifier = Modifier
+            .fillMaxSize()
+    ) {
+        AboutRow { navigateTo(ScreenState.AboutScreen) }
     }
 
 }

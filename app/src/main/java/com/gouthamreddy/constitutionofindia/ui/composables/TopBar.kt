@@ -26,7 +26,7 @@ fun TopBar(
     TopAppBar(
         title = {
             Text(
-                title(),
+                text = title(),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White

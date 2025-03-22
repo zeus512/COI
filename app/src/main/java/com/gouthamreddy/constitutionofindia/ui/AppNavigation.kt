@@ -28,6 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.gouthamreddy.constitutionofindia.data.models.SearchResult
+import com.gouthamreddy.constitutionofindia.ui.composables.AboutScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.ArticleDetailScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.ArticlesScreen
 import com.gouthamreddy.constitutionofindia.ui.composables.LoadingScreen
@@ -157,6 +158,18 @@ fun AppNavigation() {
                 })
             }
 
+            composable<ScreenState.AboutScreen> {
+                currentScreenTitle = "About App"
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AboutScreen()
+                }
+            }
+
         }
         LoadingScreen({ state.isLoading })
     }
@@ -185,6 +198,8 @@ sealed interface ScreenState {
     @Serializable
     data class ArticleDetail(val articleNumber: String) : ScreenState
 
+    @Serializable
+    data object AboutScreen : ScreenState
 
     @Serializable
     data object Search : ScreenState
