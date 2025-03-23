@@ -36,7 +36,7 @@ fun MainScreen(
         ScreenState.Parts,
         ScreenState.Preamble,
         ScreenState.Schedules,
-        ScreenState.Amendments
+        // ScreenState.Amendments
     )
     Column(
         modifier = Modifier
